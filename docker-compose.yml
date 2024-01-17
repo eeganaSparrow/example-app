@@ -24,6 +24,7 @@ services:
         depends_on:
             - mysql
             - selenium
+            - pgsql
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -53,7 +54,7 @@ services:
         image: 'mysql/mysql-server:8.0'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ROOT_HOST: "%"
+            MYSQL_ROOT_HOST: '%'
             MYSQL_DATABASE: '${DB_DATABASE}'
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
@@ -61,26 +62,57 @@ services:
         networks:
             - sail
         healthcheck:
-            test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
     mailpit:
         image: 'axllent/mailpit:latest'
         container_name: mailpit
         ports:
-          - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-          - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+            - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+            - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
-          - sail
+            - sail
     selenium:
-        image: 'seleniarm/standalone-chromium'
+        image: seleniarm/standalone-chromium
         volumes:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
+    pgsql:
+        image: 'postgres:15'
+        ports:
+            - '${FORWARD_DB_PORT:-5432}:5432'
+        environment:
+            PGPASSWORD: '${DB_PASSWORD:-secret}'
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+        volumes:
+            - 'sail-pgsql:/var/lib/postgresql/data'
+            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - pg_isready
+                - '-q'
+                - '-d'
+                - '${DB_DATABASE}'
+                - '-U'
+                - '${DB_USERNAME}'
+            retries: 3
+            timeout: 5s
 networks:
     sail:
         driver: bridge
 volumes:
     sail-mysql:
+        driver: local
+    sail-pgsql:
         driver: local
