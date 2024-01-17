@@ -1,28 +1,21 @@
-# ベースイメージを指定
-FROM php:8.2-fpm
+# richarvey/nginx-php-fpmをベースとする
+FROM richarvey/nginx-php-fpm:2.1.2
 
-# 作業ディレクトリを設定
-WORKDIR /var/www/html
-
-# Composerをインストール
-RUN apt-get update && apt-get install -y \
-    curl \
-    unzip
-
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Composerの依存関係を最初にインストール
-COPY composer.json composer.json
-COPY composer.lock composer.lock
-RUN composer install --no-interaction --optimize-autoloader
-
-# アプリケーションのコードをコピー
 COPY . .
 
-# アプリケーションの設定
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
 
-# PHP-FPMを起動
-CMD ["php-fpm"]
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
+
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+CMD ["/start.sh"]
