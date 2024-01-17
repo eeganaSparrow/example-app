@@ -1,5 +1,5 @@
 # ベースイメージを指定
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
 # 作業ディレクトリを設定
 WORKDIR /var/www/html
