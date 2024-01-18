@@ -32,7 +32,8 @@ RUN composer self-update --2
 RUN composer update --ignore-platform-reqs
 
 # zip 拡張を有効化
-RUN docker-php-ext-install zip
+RUN apt-get update && apt-get install -y libzip-dev \
+    && docker-php-ext-install zip
 
 COPY --from=node-builder /app/public ./public
 
