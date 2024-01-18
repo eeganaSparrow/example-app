@@ -40,4 +40,8 @@ COPY --from=node-builder /app/public ./public
 # --ignore-platform-req=ext-zip オプションを追加
 RUN composer install --ignore-platform-req=ext-zip
 
+RUN php artisan migrate --force
+RUN php artisan db:seed
+
+
 RUN chown -Rf www-data:www-data ./
