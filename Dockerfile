@@ -1,4 +1,4 @@
-FROM node:21-slim as node-builder
+FROM node:20-slim as node-builder
 
 WORKDIR /app
 COPY . .
