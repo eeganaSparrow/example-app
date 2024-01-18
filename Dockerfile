@@ -25,6 +25,11 @@ COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . ./
 
+# Composerのバージョンを更新
+RUN composer self-update --2
+
+# Composerパッケージの更新
+RUN composer update --ignore-platform-reqs
 
 COPY --from=node-builder /app/public ./public
 RUN composer install
