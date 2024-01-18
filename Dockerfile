@@ -1,7 +1,8 @@
 # richarvey/nginx-php-fpmをベースとする
 FROM richarvey/nginx-php-fpm:2.1.2
 
-COPY . .
+# .dockerignoreに指定されたディレクトリを除いてCOPY
+COPY --exclude vendor --exclude node_modules . .
 
 # Image config
 ENV SKIP_COMPOSER 1
