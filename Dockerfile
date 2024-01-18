@@ -31,6 +31,12 @@ RUN composer self-update --2
 # Composerパッケージの更新
 RUN composer update --ignore-platform-reqs
 
+# zip 拡張を有効化
+RUN docker-php-ext-install zip
+
 COPY --from=node-builder /app/public ./public
-RUN composer install
+
+# --ignore-platform-req=ext-zip オプションを追加
+RUN composer install --ignore-platform-req=ext-zip
+
 RUN chown -Rf www-data:www-data ./
