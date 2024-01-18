@@ -1,32 +1,36 @@
-FROM php:8.1-fpm
+FROM node:21-slim as node-builder
 
-# 依存関係のインストール
-RUN apt-get update && apt-get install -y \
-    curl \
-    zip \
-    unzip \
-    git \
-    libonig-dev \
-    libpq-dev \
-    && docker-php-ext-install pdo_pgsql mbstring
+WORKDIR /app
+COPY . .
 
-# Composerのインストール
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-# Laravelの依存関係をインストール
-WORKDIR /var/www
-COPY . /var/www
-RUN composer install
-
-# Node.jsとNPMのインストール
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get -y install nodejs
-
-# Vue.jsの依存関係をインストール
-COPY package*.json ./
-RUN npm install
+RUN npm ci
 RUN npm run build
 
-CMD php artisan serve --host=0.0.0.0 --port=8080
 
-EXPOSE 8080
+FROM php:8.2-apache
+
+RUN apt-get update && apt-get install -y \
+  zip \
+  unzip \
+  git
+
+RUN docker-php-ext-install -j "$(nproc)" opcache && docker-php-ext-enable opcache
+
+RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+RUN sed -i 's#/var/www/html#/var/www/html/public#g' /etc/apache2/sites-available/000-default.conf
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY --from=composer:2.0 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+COPY . ./
+
+# Composerのバージョンを更新
+RUN composer self-update --2
+
+# Composerパッケージの更新
+RUN composer update
+
+COPY --from=node-builder /app/public ./public
+RUN composer install
+RUN chown -Rf www-data:www-data ./
