@@ -22,7 +22,13 @@ ENV LOG_CHANNEL stderr
 # Allow composer to run as root
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
+WORKDIR /var/www/html
+COPY . ./
+
+# Composerのバージョンを更新
 RUN composer self-update --2
-RUN composer update
+
+# Composerパッケージの更新
+RUN composer update --ignore-platform-reqs
 
 CMD ["/start.sh"]
