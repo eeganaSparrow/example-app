@@ -2,6 +2,7 @@
 FROM richarvey/nginx-php-fpm:2.1.2
 
 COPY . .
+RUN npm -v
 RUN npm ci
 RUN npm run build
 
