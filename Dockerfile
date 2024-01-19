@@ -1,9 +1,11 @@
-# richarvey/nginx-php-fpmをベースとする
-FROM richarvey/nginx-php-fpm:2.1.2
+FROM node:20-slim as node-builder
 
 COPY . .
-RUN npm install
+RUN npm ci
 RUN npm run build
+
+# richarvey/nginx-php-fpmをベースとする
+FROM richarvey/nginx-php-fpm:2.1.2
 
 # Image config
 ENV SKIP_COMPOSER 1
