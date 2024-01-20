@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "ext-memcached": "*",
         "cloudinary/cloudinary_php": "^2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel-lang/lang": "~10.3",
@@ -63,9 +62,6 @@
         }
     },
     "config": {
-        "platform": {
-            "ext-memcached": "0.0.0"
-        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
