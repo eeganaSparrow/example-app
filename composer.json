@@ -63,6 +63,9 @@
         }
     },
     "config": {
+        "platform": {
+            "ext-memcached": "0.0.0"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
