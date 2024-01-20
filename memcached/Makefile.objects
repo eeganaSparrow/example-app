@@ -1,0 +1,21 @@
+-include php_memcached.dep
+php_memcached.lo: /Users/takuya/example-app/memcached/php_memcached.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Users/takuya/example-app/memcached $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -I/Applications/MAMP/bin/php/php8.2.0/include/php    -DZEND_COMPILE_DL_EXT=1 -c /Users/takuya/example-app/memcached/php_memcached.c -o php_memcached.lo  -MMD -MF php_memcached.dep -MT php_memcached.lo
+-include php_libmemcached_compat.dep
+php_libmemcached_compat.lo: /Users/takuya/example-app/memcached/php_libmemcached_compat.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Users/takuya/example-app/memcached $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -I/Applications/MAMP/bin/php/php8.2.0/include/php    -DZEND_COMPILE_DL_EXT=1 -c /Users/takuya/example-app/memcached/php_libmemcached_compat.c -o php_libmemcached_compat.lo  -MMD -MF php_libmemcached_compat.dep -MT php_libmemcached_compat.lo
+-include g_fmt.dep
+g_fmt.lo: /Users/takuya/example-app/memcached/g_fmt.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Users/takuya/example-app/memcached $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -I/Applications/MAMP/bin/php/php8.2.0/include/php    -DZEND_COMPILE_DL_EXT=1 -c /Users/takuya/example-app/memcached/g_fmt.c -o g_fmt.lo  -MMD -MF g_fmt.dep -MT g_fmt.lo
+-include fastlz/fastlz.dep
+fastlz/fastlz.lo: /Users/takuya/example-app/memcached/fastlz/fastlz.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Users/takuya/example-app/memcached $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -I/Applications/MAMP/bin/php/php8.2.0/include/php    -DZEND_COMPILE_DL_EXT=1 -c /Users/takuya/example-app/memcached/fastlz/fastlz.c -o fastlz/fastlz.lo  -MMD -MF fastlz/fastlz.dep -MT fastlz/fastlz.lo
+-include php_memcached_session.dep
+php_memcached_session.lo: /Users/takuya/example-app/memcached/php_memcached_session.c
+	$(LIBTOOL) --mode=compile $(CC) -I. -I/Users/takuya/example-app/memcached $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -I/Applications/MAMP/bin/php/php8.2.0/include/php    -DZEND_COMPILE_DL_EXT=1 -c /Users/takuya/example-app/memcached/php_memcached_session.c -o php_memcached_session.lo  -MMD -MF php_memcached_session.dep -MT php_memcached_session.lo
+$(phplibdir)/memcached.la: ./memcached.la
+	$(LIBTOOL) --mode=install cp ./memcached.la $(phplibdir)
+
+./memcached.la: $(shared_objects_memcached) $(MEMCACHED_SHARED_DEPENDENCIES)
+	$(LIBTOOL) --mode=link $(CC) -shared $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS)  -o $@ -export-dynamic -avoid-version -prefer-pic -module -rpath $(phplibdir) $(EXTRA_LDFLAGS) $(shared_objects_memcached) $(MEMCACHED_SHARED_LIBADD)
+
