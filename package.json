@@ -3,8 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build --mode production",
-        "heroku-postbuild": "npm run build"
+        "production": "vite build --mode production",
+        "heroku-postbuild": "npm run production"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
