@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
                 ],
             ]);
         });
-        if ($this->app->environment('heroku')){
+        if ($this->app->environment('production')){
             $this->app->bind(ImageManagerInterface::class,
             CloudinaryImageManager::class);
         } else {
